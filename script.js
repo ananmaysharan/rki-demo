@@ -10,15 +10,14 @@ const map = new mapboxgl.Map({
     zoom: 4,
 });
 
+fetch('https://raw.githubusercontent.com/ananmaysharan/rki-demo/main/cma.geojson')
+.then(response => response.json())
+.then(response => {
+    console.log(response); //Check response in console
+    cmageosjon = response; // Store geojson as variable using URL from fetch response
+});
 
 map.on('load', () => {
-
-    fetch('https://raw.githubusercontent.com/ananmaysharan/rki-demo/main/cma.geojson')
-    .then(response => response.json())
-    .then(response => {
-        console.log(response); //Check response in console
-        cmageosjon = response; // Store geojson as variable using URL from fetch response
-    });
 
     map.addSource('cma', {
         type: 'geojson',
