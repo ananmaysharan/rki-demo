@@ -199,8 +199,8 @@ map.on('load', () => {
         'paint': {
             'circle-radius': 4,
             'circle-color': '#8A6189',
-            //'circle-stroke-width': 1,
-            //'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#ffffff',
             'circle-opacity': [
                 "interpolate",
                 ["linear"],
@@ -208,6 +208,13 @@ map.on('load', () => {
                 12, 0,  // Opacity 1 at zoom level 10
                 14, 1   // Opacity 0 at zoom level 15
               ],
+            'circle-stroke-opacity': [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                12, 0,  // Opacity 1 at zoom level 10
+                14, 1   // Opacity 0 at zoom level 15
+              ]
         },
         'layout': {
             'visibility': 'visible'
@@ -223,8 +230,8 @@ map.on('load', () => {
         'paint': {
             'circle-radius': 4,
             'circle-color': '#9C320D',
-            //'circle-stroke-width': 1,
-            //'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#ffffff',
             'circle-opacity': [
                 "interpolate",
                 ["linear"],
@@ -232,6 +239,13 @@ map.on('load', () => {
                 12, 0,  // Opacity 1 at zoom level 10
                 14, 1   // Opacity 0 at zoom level 15
               ],
+              'circle-stroke-opacity': [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  12, 0,  // Opacity 1 at zoom level 10
+                  14, 1   // Opacity 0 at zoom level 15
+                ]
         },
         'layout': {
             'visibility': 'visible'
@@ -247,8 +261,8 @@ map.on('load', () => {
         'paint': {
             'circle-radius': 4,
             'circle-color': '#B1962B',
-            //'circle-stroke-width': 1,
-            //'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#ffffff',
             'circle-opacity': [
                 "interpolate",
                 ["linear"],
@@ -256,6 +270,13 @@ map.on('load', () => {
                 12, 0,  // Opacity 1 at zoom level 10
                 14, 1   // Opacity 0 at zoom level 15
               ],
+              'circle-stroke-opacity': [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  12, 0,  // Opacity 1 at zoom level 10
+                  14, 1   // Opacity 0 at zoom level 15
+                ]
         },
         'layout': {
             'visibility': 'visible'
@@ -272,8 +293,8 @@ map.on('load', () => {
         'paint': {
             'circle-radius': 4,
             'circle-color': '#1B9AC2',
-            //'circle-stroke-width': 1,
-            //'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#ffffff',
             'circle-opacity': [
                 "interpolate",
                 ["linear"],
@@ -281,6 +302,13 @@ map.on('load', () => {
                 12, 0,  // Opacity 1 at zoom level 10
                 14, 1   // Opacity 0 at zoom level 15
               ],
+              'circle-stroke-opacity': [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  12, 0,  // Opacity 1 at zoom level 10
+                  14, 1   // Opacity 0 at zoom level 15
+                ]
         },
         'layout': {
             'visibility': 'visible'
@@ -296,8 +324,8 @@ map.on('load', () => {
         'paint': {
             'circle-radius': 4,
             'circle-color': '#055E58',
-            //'circle-stroke-width': 1,
-            //'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#ffffff',
             'circle-opacity': [
                 "interpolate",
                 ["linear"],
@@ -305,6 +333,13 @@ map.on('load', () => {
                 12, 0,  // Opacity 1 at zoom level 10
                 14, 1   // Opacity 0 at zoom level 15
               ],
+              'circle-stroke-opacity': [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  12, 0,  // Opacity 1 at zoom level 10
+                  14, 1   // Opacity 0 at zoom level 15
+                ]
         },
         'layout': {
             'visibility': 'visible'
@@ -554,11 +589,11 @@ const legendlabels = [
 ];
 
 const legendcolours = [
-    '#003f5c',
-    '#58508d',
-    '#bc5090',
-    '#ff6361',
-    '#ffa600'
+    '#000033',
+    '#50127b',
+    '#b6377a',
+    '#fb8761',
+    '#fcfdbf'
 ];
 
 //Declare legend variable using legend div tag
