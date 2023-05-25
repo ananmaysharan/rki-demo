@@ -219,7 +219,8 @@ map.on('load', () => {
         'layout': {
             'visibility': 'visible'
         },
-        'filter': ["all", ["==", "Group", 'Arts and Culture']]
+        'filter': ["all", ["==", "Group", 'Arts and Culture']],
+        'minzoom': 12
     });
 
     map.addLayer({
@@ -250,7 +251,8 @@ map.on('load', () => {
         'layout': {
             'visibility': 'visible'
         },
-        'filter': ["all", ["==", "Group", 'Education']]
+        'filter': ["all", ["==", "Group", 'Education']],
+        'minzoom': 12
     });
 
     map.addLayer({
@@ -281,7 +283,8 @@ map.on('load', () => {
         'layout': {
             'visibility': 'visible'
         },
-        'filter': ["all", ["==", "Group", 'Government and Community Services']]
+        'filter': ["all", ["==", "Group", 'Government and Community Services']],
+        'minzoom': 12
     });
 
 
@@ -313,7 +316,8 @@ map.on('load', () => {
         'layout': {
             'visibility': 'visible'
         },
-        'filter': ["all", ["==", "Group", 'Health and Care Facilities']]
+        'filter': ["all", ["==", "Group", 'Health and Care Facilities']],
+        'minzoom': 12
     });
 
     map.addLayer({
@@ -344,7 +348,8 @@ map.on('load', () => {
         'layout': {
             'visibility': 'visible'
         },
-        'filter': ["all", ["==", "Group", 'Recreation Facilities']]
+        'filter': ["all", ["==", "Group", 'Recreation Facilities']],
+        'minzoom': 12
     });
 
 
@@ -381,6 +386,38 @@ map.on('load', () => {
     /* -------------------------------------------------------------------------- */
     /*                                    Popup                                   */
     /* -------------------------------------------------------------------------- */
+
+     // Create a popup, but don't add it to the map yet.
+     const popup3 = new mapboxgl.Popup({
+    });
+
+    // Add event listeners for both 'student_nutritional_sites' and 'community_kitchens'
+    ['artsandculture', 'education', 'recreation', 'healthandcarefacilities', 'govtcommunityservices'].forEach(layer => {
+        map.on('mouseenter', layer, (e) => {
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
+
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const name = e.features[0].properties.Name;
+
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            popup3.setLngLat(coordinates).setHTML(name).addTo(map);
+        });
+
+        map.on('mouseleave', layer, () => {
+            map.getCanvas().style.cursor = '';
+        });
+    });
+
 
     const popup = new mapboxgl.Popup({
         closeButton: false,
