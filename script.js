@@ -186,6 +186,160 @@ map.on('load', () => {
         'source-layer': 'Parks-2dtlu8'
     });
 
+    map.addSource('civicinfra', {
+        'type': 'vector',
+        'url': 'mapbox://ananmay.axrxo2tc'
+    });
+
+    map.addLayer({
+        'id': 'artsandculture',
+        'type': 'circle',
+        'source': 'civicinfra',
+        'source-layer': 'civicinfra-38qs0v',
+        'paint': {
+            'circle-radius': 4,
+            'circle-color': '#8A6189',
+            //'circle-stroke-width': 1,
+            //'circle-stroke-color': '#ffffff',
+            'circle-opacity': [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                12, 0,  // Opacity 1 at zoom level 10
+                14, 1   // Opacity 0 at zoom level 15
+              ],
+        },
+        'layout': {
+            'visibility': 'visible'
+        },
+        'filter': ["all", ["==", "Group", 'Arts and Culture']]
+    });
+
+    map.addLayer({
+        'id': 'education',
+        'type': 'circle',
+        'source': 'civicinfra',
+        'source-layer': 'civicinfra-38qs0v',
+        'paint': {
+            'circle-radius': 4,
+            'circle-color': '#9C320D',
+            //'circle-stroke-width': 1,
+            //'circle-stroke-color': '#ffffff',
+            'circle-opacity': [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                12, 0,  // Opacity 1 at zoom level 10
+                14, 1   // Opacity 0 at zoom level 15
+              ],
+        },
+        'layout': {
+            'visibility': 'visible'
+        },
+        'filter': ["all", ["==", "Group", 'Education']]
+    });
+
+    map.addLayer({
+        'id': 'govtcommunityservices',
+        'type': 'circle',
+        'source': 'civicinfra',
+        'source-layer': 'civicinfra-38qs0v',
+        'paint': {
+            'circle-radius': 4,
+            'circle-color': '#B1962B',
+            //'circle-stroke-width': 1,
+            //'circle-stroke-color': '#ffffff',
+            'circle-opacity': [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                12, 0,  // Opacity 1 at zoom level 10
+                14, 1   // Opacity 0 at zoom level 15
+              ],
+        },
+        'layout': {
+            'visibility': 'visible'
+        },
+        'filter': ["all", ["==", "Group", 'Government and Community Services']]
+    });
+
+
+    map.addLayer({
+        'id': 'healthandcarefacilities',
+        'type': 'circle',
+        'source': 'civicinfra',
+        'source-layer': 'civicinfra-38qs0v',
+        'paint': {
+            'circle-radius': 4,
+            'circle-color': '#1B9AC2',
+            //'circle-stroke-width': 1,
+            //'circle-stroke-color': '#ffffff',
+            'circle-opacity': [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                12, 0,  // Opacity 1 at zoom level 10
+                14, 1   // Opacity 0 at zoom level 15
+              ],
+        },
+        'layout': {
+            'visibility': 'visible'
+        },
+        'filter': ["all", ["==", "Group", 'Health and Care Facilities']]
+    });
+
+    map.addLayer({
+        'id': 'recreation',
+        'type': 'circle',
+        'source': 'civicinfra',
+        'source-layer': 'civicinfra-38qs0v',
+        'paint': {
+            'circle-radius': 4,
+            'circle-color': '#055E58',
+            //'circle-stroke-width': 1,
+            //'circle-stroke-color': '#ffffff',
+            'circle-opacity': [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                12, 0,  // Opacity 1 at zoom level 10
+                14, 1   // Opacity 0 at zoom level 15
+              ],
+        },
+        'layout': {
+            'visibility': 'visible'
+        },
+        'filter': ["all", ["==", "Group", 'Recreation Facilities']]
+    });
+
+
+
+    // 3d Test
+
+    map.addLayer(
+        {
+            'id': 'add-3d-buildings',
+            'source': 'composite',
+            'source-layer': 'building',
+            //'filter': ['==', 'extrude', 'true'],
+            'type': 'fill-extrusion',
+            // 'minzoom': 12,
+            'paint': {
+                'fill-extrusion-color': '#aaa',
+
+                // Use an 'interpolate' expression to
+                // add a smooth transition effect to
+                // the buildings as the user zooms in.
+                'fill-extrusion-height': ['get', 'height'],
+                'fill-extrusion-base': ['get', 'min_height'],
+                'fill-extrusion-opacity': 0.6
+            },
+            'layout': {
+                'visibility': 'none'
+            }
+        });
+
+
     map.moveLayer('westqueenwest-line');
 
 
@@ -311,6 +465,7 @@ map.on('load', () => {
 
         document.getElementById("mainstreetdropdown").style.display = "none";
         document.getElementById("mainstreetlist").style.display = "none";
+        document.getElementById("mainstreetaccordion").style.display = "block";
 
 
     });
@@ -334,6 +489,7 @@ map.on('load', () => {
     
         document.getElementById("mainstreetdropdown").style.display = "none";
         document.getElementById("mainstreetlist").style.display = "none";
+        document.getElementById("mainstreetaccordion").style.display = "block";
     });
       
 
@@ -364,3 +520,24 @@ map.on("zoomend", updateZoomLevel);
 
 });
 
+
+// Checkbox Interactivity
+
+// Get all the checkboxes
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+// Iterate over the checkboxes
+checkboxes.forEach(function (checkbox) {
+    // Add an event listener for each checkbox
+    checkbox.addEventListener('change', function () {
+        const layerId = this.parentNode.id; // Get the id of the list item
+        const layer = map.getLayer(layerId); // Get the layer with the same id as the list item
+
+        // If the checkbox is checked, show the layer; otherwise, hide it
+        if (this.checked) {
+            map.setLayoutProperty(layerId, 'visibility', 'visible');
+        } else {
+            map.setLayoutProperty(layerId, 'visibility', 'none');
+        }
+    });
+});
