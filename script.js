@@ -129,6 +129,7 @@ map.on('load', () => {
         'source-layer': 'westqueenwest_bia-2ia623'
     }, 'mainstreets-to');
 
+
     map.addLayer({
         'id': 'westqueenwest-line',
         'type': 'line',
@@ -140,6 +141,53 @@ map.on('load', () => {
         },
         'source-layer': 'westqueenwest_bia-2ia623'
     }, 'mainstreets-to');
+
+    map.addSource('westqueenwest-isochrone', {
+        'type': 'vector',
+        'url': 'mapbox://ananmay.85qqkkbl'
+    });
+
+    map.addLayer({
+        'id': 'westqueenwest-isochrone',
+        'type': 'fill',
+        'source': 'westqueenwest-isochrone',
+        'paint': {
+            'fill-color': '#2954A3', // blue color fill
+            'fill-opacity': [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                12, 0,  // Opacity 1 at zoom level 10
+                14, 0.5   // Opacity 0 at zoom level 15
+              ],
+        },
+        'source-layer': 'WestQueenWest_Walking-7g4sei'
+    }, 'mainstreets-to');
+
+    map.addSource('parks', {
+        'type': 'vector',
+        'url': 'mapbox://ananmay.b6djvwy3'
+    });
+
+    map.addLayer({
+        'id': 'parks',
+        'type': 'fill',
+        'source': 'parks',
+        'paint': {
+            'fill-color': '#26841F', // green color fill
+            'fill-opacity': [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                12, 0,  // Opacity 1 at zoom level 10
+                14, 0.5   // Opacity 0 at zoom level 15
+              ],
+        },
+        'source-layer': 'Parks-2dtlu8'
+    });
+
+    map.moveLayer('westqueenwest-line');
+
 
     /* -------------------------------------------------------------------------- */
     /*                                    Popup                                   */
@@ -302,6 +350,17 @@ map.on('data', function(e) {
     }
   });
 
+  function updateZoomLevel() {
+  currentzoom = map.getZoom();
+  const zoom = document.getElementById("zoom");
+        // Set the HTML content of the h5 element to the area name
+    zoom.innerHTML = currentzoom;
+  }
 
+  updateZoomLevel();
+
+// Add an event listener to update the zoom level when it changes
+map.on("zoomend", updateZoomLevel);
 
 });
+
