@@ -506,17 +506,17 @@ map.on('data', function(e) {
     }
   });
 
-  function updateZoomLevel() {
-  currentzoom = map.getZoom();
-  const zoom = document.getElementById("zoom");
-        // Set the HTML content of the h5 element to the area name
-    zoom.innerHTML = currentzoom;
-  }
+//   function updateZoomLevel() {
+//   currentzoom = map.getZoom();
+//   const zoom = document.getElementById("zoom");
+//         // Set the HTML content of the h5 element to the area name
+//     zoom.innerHTML = currentzoom;
+//   }
 
-  updateZoomLevel();
+//   updateZoomLevel();
 
-// Add an event listener to update the zoom level when it changes
-map.on("zoomend", updateZoomLevel);
+// // Add an event listener to update the zoom level when it changes
+// map.on("zoomend", updateZoomLevel);
 
 });
 
@@ -540,4 +540,45 @@ checkboxes.forEach(function (checkbox) {
             map.setLayoutProperty(layerId, 'visibility', 'none');
         }
     });
+});
+
+
+
+//Declare arrayy variables for labels and colours
+const legendlabels = [
+    '10 - 15.9',
+    '15.9 - 23.8',
+    '23.8 - 41.6',
+    '41.6 - 75.2',
+    '75 - 1220.2',
+];
+
+const legendcolours = [
+    '#003f5c',
+    '#58508d',
+    '#bc5090',
+    '#ff6361',
+    '#ffa600'
+];
+
+//Declare legend variable using legend div tag
+const legend = document.getElementById('legend');
+
+//For each layer create a block to put the colour and label in
+legendlabels.forEach((label, i) => {
+    const color = legendcolours[i];
+
+    const item = document.createElement('div'); //each layer gets a 'row' - this isn't in the legend yet, we do this later
+    const key = document.createElement('span'); //add a 'key' to the row. A key will be the color circle
+
+    key.className = 'legend-key'; //the key will take on the shape and style properties defined in css
+    key.style.backgroundColor = color; // the background color is retreived from teh layers array
+
+    const value = document.createElement('span'); //add a value variable to the 'row' in the legend
+    value.innerHTML = `${label}`; //give the value variable text based on the label
+
+    item.appendChild(key); //add the key (color cirlce) to the legend row
+    item.appendChild(value); //add the value to the legend row
+
+    legend.appendChild(item); //add row to the legend
 });
