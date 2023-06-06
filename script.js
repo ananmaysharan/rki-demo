@@ -5,8 +5,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYW5hbm1heSIsImEiOiJjbDk0azNmY3oxa203M3huMzhyZ
 //initialize map
 const map = new mapboxgl.Map({
     container: "map", // container ID
-    style: "mapbox://styles/mapbox/dark-v11", // custom Mapbox Studio style URL
-    center: [-93.91328125, 52.05249047600099], // starting center in [lng, lat]
+    style: "mapbox://styles/mapbox/light-v11", // custom Mapbox Studio style URL
+    center: [-93.91328125, 62.05249047600099], // starting center in [lng, lat]
     zoom: 3,
     attributionControl: false
 });
@@ -19,94 +19,56 @@ map.addControl(new mapboxgl.AttributionControl({
 }));
 
 // Add the control to the map.
-map.addControl(
-    new MapboxGeocoder({
+
+   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     countries: 'ca',
     types: 'place',
     language: 'en',
     marker: false,
     zoom: 4
-    }), 'top-left'
-    );
+    })
 
-let cmageojson;
-
-fetch('https://raw.githubusercontent.com/ananmaysharan/rki-demo/main/cma.geojson')
-    .then(response => response.json())
-    .then(response => {
-        //console.log(response); //Check response in console
-        cmageojson = response; // Store geojson as variable using URL from fetch response
-    });
-
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
 map.on('load', () => {
 
-    map.addSource('cma', {
-        type: 'geojson',
-        data: cmageojson
-    });
-
-    map.addLayer({
-        'id': 'cma-fill',
-        'type': 'fill',
-        'source': 'cma',
-        'paint': {
-            'fill-color': '#EA1321', // blue color fill
-            'fill-opacity': [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                4, 0.4,  // Opacity 1 at zoom level 10
-                7, 0   // Opacity 0 at zoom level 15
-              ]
-        }
-    });
-
-    map.addLayer({
-        'id': 'cma-outline',
-        'type': 'line',
-        'source': 'cma',
-        'paint': {
-            'line-color': '#000004',
-            'line-width': 2,
-            'line-opacity': 0.4
-        }
-    });
-
-    map.addSource('mainstreets-to', {
+    map.addSource('mainstreets', {
         'type': 'vector',
-        'url': 'mapbox://ananmay.6h5lfuq8'
+        'url': 'mapbox://ananmay.3x6p7vfl'
     });
 
     map.addLayer({
-        'id': 'mainstreets-to',
+        'id': 'mainstreets',
         'type': 'line',
-        'source': 'mainstreets-to',
+        'source': 'mainstreets',
         'paint': {
             'line-color': [
                 'step', // STEP expression produces stepped results based on value pairs
                 ['get', 'Bsnss_t'], // GET expression retrieves property value from 'Bsnss_t' data field
                 '#000', // Colour assigned to any values < first step
-                10, '#000033', // Colours assigned to values >= each step
-                15.9, '#50127b',
-                23.8, '#b6377a',
-                41.6, '#fb8761',
-                75.2, '#fcfdbf'
+                5, '#000033', // Colours assigned to values >= each step
+                9.2, '#50127b',
+                15.5, '#b6377a',
+                26.7, '#fb8761',
+                52.5, '#fcfdbf'
             ],
             'line-width': 1,
-            'line-opacity': [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                7, 1,  // Opacity 1 at zoom level 10
-                15, 0.4   // Opacity 0 at zoom level 15
-              ]
+            // 'line-opacity': [
+            //     "interpolate",
+            //     ["linear"],
+            //     ["zoom"],
+            //     7, 1,  // Opacity 1 at zoom level 10
+            //     15, 0.4   // Opacity 0 at zoom level 15
+            //   ]
         },
-        'source-layer': 'mainstreets_to-copw1v',
-        'minzoom': 7
+        'source-layer': 'mainstreets-6sme9h',
+        // 'minzoom': 7
     });
 
+    /* -------------------------------------------------------------------------- */
+    /*                                 Old Layers                                 */
+    /* -------------------------------------------------------------------------- */
     map.addSource('westqueenwest', {
         'type': 'vector',
         'url': 'mapbox://ananmay.9eb599ys'
@@ -127,7 +89,7 @@ map.on('load', () => {
               ],
         },
         'source-layer': 'westqueenwest_bia-2ia623'
-    }, 'mainstreets-to');
+    }, 'mainstreets');
 
 
     map.addLayer({
@@ -140,7 +102,7 @@ map.on('load', () => {
 
         },
         'source-layer': 'westqueenwest_bia-2ia623'
-    }, 'mainstreets-to');
+    }, 'mainstreets');
 
     map.addSource('westqueenwest-isochrone', {
         'type': 'vector',
@@ -162,7 +124,7 @@ map.on('load', () => {
               ],
         },
         'source-layer': 'WestQueenWest_Walking-7g4sei'
-    }, 'mainstreets-to');
+    }, 'mainstreets');
 
     map.addSource('parks', {
         'type': 'vector',
@@ -352,8 +314,6 @@ map.on('load', () => {
         'minzoom': 12
     });
 
-
-
     // 3d Test
 
     map.addLayer(
@@ -378,279 +338,10 @@ map.on('load', () => {
                 'visibility': 'none'
             }
         });
-
-
-    map.moveLayer('westqueenwest-line');
-
-
-    /* -------------------------------------------------------------------------- */
-    /*                                    Popup                                   */
-    /* -------------------------------------------------------------------------- */
-
-     // Create a popup, but don't add it to the map yet.
-     const popup3 = new mapboxgl.Popup({
-    });
-
-    // Add event listeners for both 'student_nutritional_sites' and 'community_kitchens'
-    ['artsandculture', 'education', 'recreation', 'healthandcarefacilities', 'govtcommunityservices'].forEach(layer => {
-        map.on('mouseenter', layer, (e) => {
-            // Change the cursor style as a UI indicator.
-            map.getCanvas().style.cursor = 'pointer';
-
-            // Copy coordinates array.
-            const coordinates = e.features[0].geometry.coordinates.slice();
-            const name = e.features[0].properties.Name;
-
-            // Ensure that if the map is zoomed out such that multiple
-            // copies of the feature are visible, the popup appears
-            // over the copy being pointed to.
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            // Populate the popup and set its coordinates
-            // based on the feature found.
-            popup3.setLngLat(coordinates).setHTML(name).addTo(map);
-        });
-
-        map.on('mouseleave', layer, () => {
-            map.getCanvas().style.cursor = '';
-        });
-    });
-
-
-    const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false
-    });
-
-    map.on('mouseenter', 'cma-fill', (e) => {
-        if (map.getZoom() < 10) {
-        map.getCanvas().style.cursor = 'pointer';
-        popup
-            .setLngLat(e.lngLat)
-            .setHTML(e.features[0].properties.CMANAME)
-            .addTo(map);
-        }
-    });
-
-    // Change the cursor back to a pointer
-    // when it leaves the layer.
-    map.on('mouseleave', 'cma-fill', () => {
-        map.getCanvas().style.cursor = '';
-        popup.remove();
-    });
-
-    map.on('mouseenter', 'westqueenwest-fill', (e) => {
-        if (map.getZoom() > 7) {
-        map.getCanvas().style.cursor = 'pointer';
-        popup
-            .setLngLat(e.lngLat)
-            .setHTML(e.features[0].properties.AREA_NAME)
-            .addTo(map);
-        }
-    });
-
-    // Change the cursor back to a pointer
-    // when it leaves the layer.
-    map.on('mouseleave', 'westqueenwest-fill', () => {
-        map.getCanvas().style.cursor = '';
-        popup.remove();
-    });
-
-    map.on('click', 'cma-fill', function (e) {
-        const clickedFeature = e.features[0];
-        const geometry = clickedFeature.geometry;
-        const turfFeature = turf.feature(geometry);
-        const bbox = turf.bbox(turfFeature);
-        const bounds = [
-            [bbox[0], bbox[1]],
-            [bbox[2], bbox[3]]
-        ];
-        map.fitBounds(bounds, { padding: 50 });
-        map.setPaintProperty('cma-outline', 'line-opacity', 0.3);
-        const title = document.getElementById("title");
-        // Set the HTML content of the h5 element to the area name
-        title.innerHTML = clickedFeature.properties.CMANAME;
-        console.log(title)
-
-        document.getElementById("mainstreetdropdown").style.display = "block";
-        document.getElementById("mainstreetlist").style.display = "block";
-
-
-        
-        // // Draw the rectangle
-        // if (map.getLayer('bbox-rectangle')) {
-        //     map.removeLayer('bbox-rectangle');
-        // }
-        // if (map.getSource('bbox-rectangle')) {
-        //     map.removeSource('bbox-rectangle');
-        // }
-
-        // map.addSource('bbox-rectangle', {
-        //     type: 'geojson',
-        //     data: {
-        //         type: 'Feature',
-        //         geometry: {
-        //             type: 'Polygon',
-        //             coordinates: [[
-        //                 [bbox[0], bbox[1]],
-        //                 [bbox[0], bbox[3]],
-        //                 [bbox[2], bbox[3]],
-        //                 [bbox[2], bbox[1]],
-        //                 [bbox[0], bbox[1]]
-        //             ]]
-        //         }
-        //     }
-        // });
-
-        // map.addLayer({
-        //     id: 'bbox-rectangle',
-        //     type: 'fill',
-        //     source: 'bbox-rectangle',
-        //     paint: {
-        //         'fill-color': '#ff0000',
-        //         'fill-opacity': 0.5
-        //     }
-        // });
-
-
-    });
-
-    map.on('click', 'westqueenwest-fill', function (e) {
-        const clickedFeature = e.features[0];
-        const geometry = clickedFeature.geometry;
-        const turfFeature = turf.feature(geometry);
-        const bbox = turf.bbox(turfFeature);
-        const bounds = [
-            [bbox[0], bbox[1]],
-            [bbox[2], bbox[3]]
-        ];
-        map.fitBounds(bounds, { padding: 50 });
-        // map.setPaintProperty('cma-fill', 'fill-opacity', 0);
-        // map.setPaintProperty('cma-outline', 'line-opacity', 0.3);
-        map.getCanvas().style.cursor = 'pointer';
-
-        const title = document.getElementById("title");
-        // Set the HTML content of the h5 element to the area name
-        title.innerHTML = clickedFeature.properties.AREA_NAME;
-
-        document.getElementById("mainstreetdropdown").style.display = "none";
-        document.getElementById("mainstreetlist").style.display = "none";
-        document.getElementById("mainstreetaccordion").style.display = "block";
-
-
-    });
-
-    document.getElementById("westqueenwest-link").addEventListener("click", function (e) {
-        const features = map.queryRenderedFeatures({ layers: ['westqueenwest-fill'] });
-        console.log(features)
-        const clickedFeature = features[0];
-        const geometry = clickedFeature.geometry;
-        const turfFeature = turf.feature(geometry);
-        const bbox = turf.bbox(turfFeature);
-        const bounds = [
-            [bbox[0], bbox[1]],
-            [bbox[2], bbox[3]]
-        ];
-        map.fitBounds(bounds, { padding: 50 });
-    
-        const title = document.getElementById("title");
-        // Set the HTML content of the h5 element to the area name
-        title.innerHTML = clickedFeature.properties.AREA_NAME;
-    
-        document.getElementById("mainstreetdropdown").style.display = "none";
-        document.getElementById("mainstreetlist").style.display = "none";
-        document.getElementById("mainstreetaccordion").style.display = "block";
-    });
       
 
-
-
-map.on('data', function(e) {
-    if (e.sourceId === 'mainstreets-to' && e.isSourceLoaded) {
-      const features = map.querySourceFeatures('mainstreets-to', { sourceLayer: 'mainstreets_to-copw1v' });
-      const values = features.map(feature => feature.properties.Bsnss_t);
-      const geoSeries = new geostats(values);
-      const quantiles = geoSeries.getClassQuantile(4);
-      //console.log(values);
-      console.log(quantiles);
-    }
-  });
-
-//   function updateZoomLevel() {
-//   currentzoom = map.getZoom();
-//   const zoom = document.getElementById("zoom");
-//         // Set the HTML content of the h5 element to the area name
-//     zoom.innerHTML = currentzoom;
-//   }
-
-//   updateZoomLevel();
-
-// // Add an event listener to update the zoom level when it changes
-// map.on("zoomend", updateZoomLevel);
-
-});
-
-
-// Checkbox Interactivity
-
-// Get all the checkboxes
-const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-
-// Iterate over the checkboxes
-checkboxes.forEach(function (checkbox) {
-    // Add an event listener for each checkbox
-    checkbox.addEventListener('change', function () {
-        const layerId = this.parentNode.id; // Get the id of the list item
-        const layer = map.getLayer(layerId); // Get the layer with the same id as the list item
-
-        // If the checkbox is checked, show the layer; otherwise, hide it
-        if (this.checked) {
-            map.setLayoutProperty(layerId, 'visibility', 'visible');
-        } else {
-            map.setLayoutProperty(layerId, 'visibility', 'none');
-        }
-    });
 });
 
 
 
-//Declare arrayy variables for labels and colours
-const legendlabels = [
-    '10 - 15.9',
-    '15.9 - 23.8',
-    '23.8 - 41.6',
-    '41.6 - 75.2',
-    '75 - 1220.2',
-];
 
-const legendcolours = [
-    '#000033',
-    '#50127b',
-    '#b6377a',
-    '#fb8761',
-    '#fcfdbf'
-];
-
-//Declare legend variable using legend div tag
-const legend = document.getElementById('legend');
-
-//For each layer create a block to put the colour and label in
-legendlabels.forEach((label, i) => {
-    const color = legendcolours[i];
-
-    const item = document.createElement('div'); //each layer gets a 'row' - this isn't in the legend yet, we do this later
-    const key = document.createElement('span'); //add a 'key' to the row. A key will be the color circle
-
-    key.className = 'legend-key'; //the key will take on the shape and style properties defined in css
-    key.style.backgroundColor = color; // the background color is retreived from teh layers array
-
-    const value = document.createElement('span'); //add a value variable to the 'row' in the legend
-    value.innerHTML = `${label}`; //give the value variable text based on the label
-
-    item.appendChild(key); //add the key (color cirlce) to the legend row
-    item.appendChild(value); //add the value to the legend row
-
-    legend.appendChild(item); //add row to the legend
-});
