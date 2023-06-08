@@ -376,8 +376,6 @@ map.on('click', 'provinces-fill', function (e) {
         [bbox[2], bbox[3]]
     ];
     map.fitBounds(bounds, { padding: 50 });
-    document.getElementById("legend").style.display = "block";
-
 
 });
 
