@@ -66,6 +66,28 @@ map.on('load', () => {
         // 'minzoom': 7
     });
 
+    map.addSource('provinces', {
+        'type': 'vector',
+        'url': 'mapbox://ananmay.6koz5u8g'
+    });
+
+    map.addLayer({
+        'id': 'provinces-fill',
+        'type': 'fill',
+        'source': 'provinces',
+        'paint': {
+            'fill-color': '#EB1414', // blue color fill
+            'fill-opacity': [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                3, 0.6,  // Opacity 1 at zoom level 10
+                6, 0   // Opacity 0 at zoom level 15
+              ],
+        },
+        'source-layer': 'canada-provinces-0zchsz'
+    });
+
     /* -------------------------------------------------------------------------- */
     /*                                 Old Layers                                 */
     /* -------------------------------------------------------------------------- */
