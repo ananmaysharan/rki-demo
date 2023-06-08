@@ -51,7 +51,7 @@ map.on('load', () => {
                 9.2, '#50127b',
                 15.5, '#b6377a',
                 26.7, '#fb8761',
-                52.5, '#fcfdbf'
+                52.5, '#ffd91a'
             ],
             'line-width': 1,
             // 'line-opacity': [
@@ -126,27 +126,27 @@ map.on('load', () => {
         'source-layer': 'westqueenwest_bia-2ia623'
     }, 'mainstreets');
 
-    map.addSource('westqueenwest-isochrone', {
-        'type': 'vector',
-        'url': 'mapbox://ananmay.85qqkkbl'
-    });
+    // map.addSource('westqueenwest-isochrone', {
+    //     'type': 'vector',
+    //     'url': 'mapbox://ananmay.85qqkkbl'
+    // });
 
-    map.addLayer({
-        'id': 'westqueenwest-isochrone',
-        'type': 'fill',
-        'source': 'westqueenwest-isochrone',
-        'paint': {
-            'fill-color': '#2954A3', // blue color fill
-            'fill-opacity': [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                12, 0,  // Opacity 1 at zoom level 10
-                14, 0.5   // Opacity 0 at zoom level 15
-              ],
-        },
-        'source-layer': 'WestQueenWest_Walking-7g4sei'
-    }, 'mainstreets');
+    // map.addLayer({
+    //     'id': 'westqueenwest-isochrone',
+    //     'type': 'fill',
+    //     'source': 'westqueenwest-isochrone',
+    //     'paint': {
+    //         'fill-color': '#2954A3', // blue color fill
+    //         'fill-opacity': [
+    //             "interpolate",
+    //             ["linear"],
+    //             ["zoom"],
+    //             12, 0,  // Opacity 1 at zoom level 10
+    //             14, 0.5   // Opacity 0 at zoom level 15
+    //           ],
+    //     },
+    //     'source-layer': 'WestQueenWest_Walking-7g4sei'
+    // }, 'mainstreets');
 
     map.addSource('parks', {
         'type': 'vector',
@@ -366,4 +366,57 @@ map.on('load', () => {
 
 
 
+map.on('click', 'provinces-fill', function (e) {
+    const clickedFeature = e.features[0];
+    const geometry = clickedFeature.geometry;
+    const turfFeature = turf.feature(geometry);
+    const bbox = turf.bbox(turfFeature);
+    const bounds = [
+        [bbox[0], bbox[1]],
+        [bbox[2], bbox[3]]
+    ];
+    map.fitBounds(bounds, { padding: 50 });
+    document.getElementById("legend").style.display = "block";
 
+
+});
+
+
+//Declare arrayy variables for labels and colours
+const legendlabels = [
+    '10 - 15.9',
+    '15.9 - 23.8',
+    '23.8 - 41.6',
+    '41.6 - 75.2',
+    '75 - 1220.2',
+];
+
+const legendcolours = [
+    '#000033',
+    '#50127b',
+    '#b6377a',
+    '#fb8761',
+    '#fcfdbf'
+];
+
+//Declare legend variable using legend div tag
+const legend = document.getElementById('legend');
+
+//For each layer create a block to put the colour and label in
+legendlabels.forEach((label, i) => {
+    const color = legendcolours[i];
+
+    const item = document.createElement('div'); //each layer gets a 'row' - this isn't in the legend yet, we do this later
+    const key = document.createElement('span'); //add a 'key' to the row. A key will be the color circle
+
+    key.className = 'legend-key'; //the key will take on the shape and style properties defined in css
+    key.style.backgroundColor = color; // the background color is retreived from teh layers array
+
+    const value = document.createElement('span'); //add a value variable to the 'row' in the legend
+    value.innerHTML = `${label}`; //give the value variable text based on the label
+
+    item.appendChild(key); //add the key (color cirlce) to the legend row
+    item.appendChild(value); //add the value to the legend row
+
+    legend.appendChild(item); //add row to the legend
+});
